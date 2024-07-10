@@ -5,19 +5,18 @@ import { DataStore } from "..";
 import { User, Post, Like, Comment } from "../../types";
 
 import path from "path";
-const __dirname = path.resolve();
 
 export class SqlDatastore implements DataStore {
-  private db: Database<sqlite3.Database, sqlite3.Statement>;
+  private db!: Database<sqlite3.Database, sqlite3.Statement>;
 
   public async openDb() {
     this.db = await sqliteOpen({
-      filename: path.join(__dirname, "server", "datastore", "sql", "hackerank.sqlite"),
+      filename: path.join(__dirname, "hackerank.sqlite"),
       driver: sqlite3.Database,
     });
 
     await this.db.migrate({
-      migrationsPath: path.join(__dirname, "server", "datastore", "sql", "migrations"),
+      migrationsPath: path.join(__dirname, "migrations"),
     });
 
     return this;
@@ -36,15 +35,24 @@ export class SqlDatastore implements DataStore {
   }
 
   async getUserById(id: string): Promise<User | undefined> {
-    return await this.db.get<User | undefined>("SELECT * FROM users WHERE id = ?", id);
+    return await this.db.get<User | undefined>(
+      "SELECT * FROM users WHERE id = ?",
+      id
+    );
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    return await this.db.get<User | undefined>("SELECT * FROM users WHERE email = ?", email);
+    return await this.db.get<User | undefined>(
+      "SELECT * FROM users WHERE email = ?",
+      email
+    );
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return await this.db.get<User | undefined>("SELECT * FROM users WHERE username = ?", username);
+    return await this.db.get<User | undefined>(
+      "SELECT * FROM users WHERE username = ?",
+      username
+    );
   }
 
   async createPost(post: Post): Promise<void> {

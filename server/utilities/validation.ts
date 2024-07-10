@@ -2,8 +2,8 @@ import { Response } from "express";
 
 export const requestPostDataValidation = (
   res: Response,
-  title: string,
-  url: string
+  title: string | undefined,
+  url: string | undefined
 ): Response<any, Record<string, any>> | undefined => {
   if (!title) {
     return res.send(400).send("Post title field is required.");
