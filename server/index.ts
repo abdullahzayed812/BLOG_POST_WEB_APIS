@@ -6,8 +6,8 @@ import dotenv from "dotenv";
 import { requestLoggerMiddleware } from "./middlewares/loggerMiddleware";
 import { errorHandlerMiddleware } from "./middlewares/errorMiddleware";
 import { authMiddleware } from "./middlewares/authMiddleware";
-import { createPostHandler, listPostsHandler } from "./handlers/postHandler";
 import authRoute from "./routes/auth";
+import postsRoute from "./routes/posts";
 
 (async () => {
   await initDb();
@@ -27,8 +27,8 @@ import authRoute from "./routes/auth";
   app.use(authMiddleware);
 
   // Protected endpoints.
-  app.get("/v1/posts", expressAsyncHandler(listPostsHandler));
-  app.post("/v1/posts", expressAsyncHandler(createPostHandler));
+  app.get("/v1/posts", postsRoute);
+  app.post("/v1/posts", postsRoute);
 
   app.use(errorHandlerMiddleware);
 
