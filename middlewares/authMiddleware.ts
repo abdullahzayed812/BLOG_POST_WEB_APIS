@@ -3,14 +3,14 @@ import { db } from "../datastore";
 import { ExpressHandler } from "../types/api";
 
 export const authMiddleware: ExpressHandler<any, any> = async (req, res, next) => {
-  const token = req.headers.authorization;
+  const userToken = req.headers.authorization;
 
-  if (!token) {
-    res.status(401).send({ error: "No token exist, please check it and try again." });
+  if (!userToken) {
+    res.status(401).send({ error: "No token exist, please check it and try again." }); // Unauthorized.
   }
 
   try {
-    const { userId } = verifyJwt(token!);
+    const { userId } = verifyJwt(userToken!);
     const user = await db.getUserById(userId);
 
     if (!user) {

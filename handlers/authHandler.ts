@@ -1,10 +1,4 @@
-import {
-  ExpressHandler,
-  SignInRequest,
-  SignInResponse,
-  SignUpRepose,
-  SignUpRequest,
-} from "../types/api";
+import { ExpressHandler, SignInRequest, SignInResponse, SignUpRepose, SignUpRequest } from "../types/api";
 import { signJwt } from "../utilities/auth";
 import { db } from "../datastore";
 import { User } from "../types";
@@ -34,25 +28,25 @@ export const signUpHandler: ExpressHandler<SignUpRequest, SignUpRepose> = async 
 
   await db.createUser(user);
 
-  const jwt = signJwt({ userId: user.id });
+  const accessToken = signJwt({ userId: user.id });
 
-  return res.status(200).send({ accessToken: jwt });
+  return res.status(200).send({ accessToken });
 };
 
 export const signInHandler: ExpressHandler<SignInRequest, SignInResponse> = async (req, res) => {
   const { login, password } = req.body;
 
   if (!login || !password) {
-    return res.sendStatus(400);
+    return res.status(400).send({ error: "Login or password filed is incorrect." }); // Bad request.
   }
 
   const userExists = (await db.getUserByEmail(login)) || (await db.getUserByUsername(login));
 
   if (!userExists || userExists.password !== hashPassword(password)) {
-    return res.sendStatus(403);
+    return res.status(403).send({ error: "Unauthorized user, password not match." }); // Unauthorized (not well credentials)
   }
 
-  const jwt = signJwt({ userId: userExists.id });
+  const accessToken = signJwt({ userId: userExists.id });
 
   return res.status(200).send({
     user: {
@@ -62,7 +56,7 @@ export const signInHandler: ExpressHandler<SignInRequest, SignInResponse> = asyn
       lastName: userExists.lastName,
       username: userExists.username,
     },
-    accessToken: jwt,
+    accessToken,
   });
 };
 

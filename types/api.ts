@@ -3,12 +3,7 @@ import { Post, User } from ".";
 
 export type WithError<T> = T & { error: string };
 
-export type ExpressHandler<Req, Res> = RequestHandler<
-  string,
-  Partial<WithError<Res>>,
-  Partial<Req>,
-  any
->;
+export type ExpressHandler<Req, Res> = RequestHandler<string, Partial<WithError<Res>>, Partial<Req>, any>;
 
 // Post APIs
 export interface ListPostsRequest {}
@@ -28,11 +23,8 @@ export interface GetPostResponse {}
 
 // Like APIs
 
-// User APIs
-export type SignUpRequest = Pick<
-  User,
-  "email" | "firstName" | "lastName" | "password" | "username"
->;
+// Auth APIs
+export type SignUpRequest = Pick<User, "email" | "firstName" | "lastName" | "password" | "username">;
 export interface SignUpRepose {
   accessToken: string;
 }
