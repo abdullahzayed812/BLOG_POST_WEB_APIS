@@ -1,5 +1,5 @@
 import sqlite3 from "sqlite3";
-import { Database, open as sqliteOpen } from "sqlite";
+import { Database, open as openSqlite } from "sqlite";
 
 import { DataStore } from "..";
 import { User, Post, Like, Comment } from "../../types";
@@ -10,10 +10,13 @@ export class SqlDatastore implements DataStore {
   private db!: Database<sqlite3.Database, sqlite3.Statement>;
 
   public async openDb() {
-    this.db = await sqliteOpen({
-      filename: path.join(__dirname, "hackerank.sqlite"),
+    this.db = await openSqlite({
+      filename: path.join(__dirname, "blog-post.sqlite"),
       driver: sqlite3.Database,
     });
+
+    // This instruction to make db constraints to foreign keys
+    // this.db.run("PRAGMA foreign_keys = ON");
 
     await this.db.migrate({
       migrationsPath: path.join(__dirname, "migrations"),
